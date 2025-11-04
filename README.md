@@ -1,24 +1,96 @@
-# README
+# Kaburan — 家族の買い被り（買い物の重複）を防ぐ共有アプリ
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+家族・同居人間の「同じ物を二重に買ってしまう」問題を減らすための、共有型の買い物リストアプリです。家族グループでリストを共有し、登録時の軽いアラートで重複購入を抑止します。
 
-Things you may want to cover:
+---
 
-* Ruby version
+## サービス概要
 
-* System dependencies
+- 家族グループを作成し、メンバー間で買い物リストをリアルタイム共有
+- 同一・類似アイテムの登録時に軽いアラートを表示して重複購入を防止
+- 「購入済み」へ変更して進捗を可視化
 
-* Configuration
+---
 
-* Database creation
+## このサービスへの思い・作りたい理由
 
-* Database initialization
+祖母と暮らす中で、意図せぬ“買い被り”が発生し、食品を無駄にしてしまうことがありました。家族で気軽に買い物情報を共有できる仕組みがあれば、この無駄を減らせると考え、本サービスを企画・開発しました。
 
-* How to run the test suite
+---
 
-* Services (job queues, cache servers, search engines, etc.)
+## 想定ユーザー
 
-* Deployment instructions
+- 家族や同居人（核家族・二世帯家庭など）
+- シェアハウス・同棲カップル
 
-* ...
+最も「誰が何を買う／買ったか」を共有するニーズが強い層を対象にしています。
+
+---
+
+## 利用イメージ
+
+1. 家族グループを作成し、メンバーが参加
+2. 買い物予定をリストに登録
+3. 他メンバーがリアルタイムで閲覧・更新
+4. 既存と同じ商品が登録される場合は軽くアラート表示
+5. 購入したら「購入済み」に変更し、全員が確認可能
+
+---
+
+## 差別化ポイント
+
+- 自由書き込み型リスト × 軽いアラート表示のバランス設計
+- Hotwire（Turbo Streams）によるリアルタイム同期
+- 家族単位の共有設計（一般的なToDo・買い物メモとの差別化）
+- 将来拡張（レシートOCR、履歴分析など）を見据えた構成
+
+---
+
+## 機能
+
+### MVP（実装予定）
+- ユーザー登録 / ログイン（Devise）
+- 家族グループ（Household）の作成 / 参加
+- 買い物リスト（Item）の登録・編集・削除
+- リアルタイム共有（Turbo Streams）
+- 登録時の重複検知・アラート表示（Stimulus + Ajax）
+- 購入済みチェック
+- タイムライン表示（更新履歴）
+
+### 本リリースでの追加候補
+- レシートOCRによる自動登録
+- カテゴリ別フィルタリング（食品 / 日用品等）
+- リマインド通知
+- 購入履歴のグラフ表示（Chartkick）
+- コメント・メモ機能
+
+---
+
+## 画面構成（MVP想定）
+
+1. ログインページ（登録・ログイン）
+2. グループページ（作成・招待）
+3. ホーム（タイムライン）
+4. リスト追加ページ（重複アラート付き登録）
+5. リスト詳細ページ（購入済み更新、コメント）
+6. 履歴ページ（購入済み記録）
+
+スクリーンショット（例）:
+- docs/screenshots/login.png
+- docs/screenshots/list.png
+- docs/screenshots/detail.png
+
+---
+
+## 技術スタック
+
+- フレームワーク: Ruby on Rails 7.x（Hotwire構成）
+- 言語: Ruby 3.x / JavaScript (ES6) / Stimulus.js
+- データベース: PostgreSQL
+- 認証: Devise
+- リアルタイム: Turbo Streams
+- スタイル: Tailwind CSS
+- デプロイ候補: Render / Fly.io / Heroku
+- 主なライブラリ: devise / turbo-rails / stimulus-rails / pg / chartkick / groupdate など
+
+---

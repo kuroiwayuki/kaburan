@@ -128,3 +128,6 @@
 結論:
 - MVPは Render を第一候補とします（Webサービス + Managed PostgreSQL で最短に立ち上げやすい）。
 - 将来的にリージョン/常時稼働/ネットワーク制御が必要になれば Fly.io を検討（既にDocker運用のため移行容易）。
+
+## 画面遷移図
+https://www.figma.com/design/kM7LOvgzxLPZApBHecfWvF/kaburan?node-id=1-3148&p=f&t=6roR984pTXc3xNMF-0

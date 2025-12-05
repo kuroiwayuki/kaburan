@@ -131,3 +131,6 @@
 
 ## 画面遷移図
 https://www.figma.com/design/kM7LOvgzxLPZApBHecfWvF/kaburan?node-id=1-3148&p=f&t=6roR984pTXc3xNMF-0
+
+## ER図
+https://drive.google.com/file/d/1I67zFHaSNN8-ve5j-05UYbJgJ9a75Ae-/view?usp=sharing

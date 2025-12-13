@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   get "posts/index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -10,6 +11,13 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
+  resources :households, only: [ :new, :create ] do
+    collection do
+      get :join
+      post :join, action: :join_create
+    end
+  end
+
   # Defines the root path route ("/")
-  # root "posts#index"
+  root "posts#index"
 end

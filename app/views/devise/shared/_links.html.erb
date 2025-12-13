@@ -23,4 +23,3 @@
     <%= button_to "Sign in with #{OmniAuth::Utils.camelize(provider)}", omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "text-indigo-600 hover:text-indigo-500 text-sm" %><br />
   <% end %>
 <% end %>
-

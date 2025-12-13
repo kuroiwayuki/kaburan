@@ -101,6 +101,45 @@
 
 ---
 
+## 画面構成（MVP想定）
+
+1. **ログインページ**（登録・ログイン）
+   - Sign up / Sign in
+   - Deviseを使用
+
+2. **グループページ**（作成・招待）
+   - Household作成フォーム
+   - 招待コード入力フォーム
+   - 参加済みHousehold一覧
+
+3. **ホーム（タイムライン）** - Memo一覧ページ
+   - Household内のMemosを時系列（新しい順）で表示
+   - 各Memo内に複数のItemsを表示
+   - 各Itemに購入済み/未購入の状態を表示
+   - 「新規メモ作成」ボタン
+   - 購入済みにしてもメモは消えず、フラグがつくだけ
+
+4. **Memo作成ページ**（重複アラート付き登録）
+   - 複数のItemを追加できるフォーム
+   - 動的にItem入力欄を追加
+   - 各Item登録時に重複検知（正規化＋前方一致）
+   - 類似アイテムがある場合はflashでアラート表示
+
+5. **Memo編集ページ**
+   - Memo内のItemsを編集
+   - Itemの追加・削除
+   - Item名の修正
+
+6. **履歴ページ**（ItemHistoriesタイムライン）
+   - Household内の全アクション（作成・更新・購入）を時系列表示
+   - 「誰が・いつ・何をしたか」を表示
+
+スクリーンショット（例）:
+- docs/screenshots/login.png
+- docs/screenshots/timeline.png
+- docs/screenshots/memo_create.png
+- docs/screenshots/history.png
+
 ## 技術スタック
 
 - フレームワーク: Ruby on Rails 7.x（Hotwire構成）

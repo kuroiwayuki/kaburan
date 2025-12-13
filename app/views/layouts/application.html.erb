@@ -18,6 +18,19 @@
   </head>
 
   <body>
+    <% if user_signed_in? %>
+      <nav class="bg-white shadow-sm border-b">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+          <div class="text-lg font-semibold text-gray-900">かぶらん</div>
+          <div class="flex items-center space-x-4">
+            <span class="text-sm text-gray-700"><%= current_user.name %></span>
+            <%= button_to "ログアウト", destroy_user_session_path, method: :delete, 
+                class: "text-sm text-indigo-600 hover:text-indigo-500 bg-transparent border-none cursor-pointer" %>
+          </div>
+        </div>
+      </nav>
+    <% end %>
+
     <main class="container mx-auto mt-28 px-5">
       <%= yield %>
     </main>

@@ -130,10 +130,6 @@
    - Itemの追加・削除
    - Item名の修正
 
-6. **履歴ページ**（ItemHistoriesタイムライン）
-   - Household内の全アクション（作成・更新・購入）を時系列表示
-   - 「誰が・いつ・何をしたか」を表示
-
 スクリーンショット（例）:
 - docs/screenshots/login.png
 - docs/screenshots/timeline.png

@@ -1,0 +1,98 @@
+<div class="w-full max-w-md mx-auto">
+  <h2 class="text-2xl font-bold text-gray-900 mb-6">買い物メモを作成</h2>
+
+  <%= form_with model: @memo, url: memos_path, html: { class: "space-y-4" } do |f| %>
+    <% if @memo.errors.any? %>
+      <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-4">
+        <h3 class="font-semibold mb-2">
+          <%= pluralize(@memo.errors.count, "件のエラー") %>があります：
+        </h3>
+        <ul class="list-disc list-inside">
+          <% @memo.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div id="items-container" class="space-y-3">
+      <%= f.fields_for :items do |item_form| %>
+        <div class="item-field flex items-center space-x-2">
+          <%= item_form.text_field :name, placeholder: "例: にんじん", class: "flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" %>
+          <button type="button" class="remove-item text-red-600 hover:text-red-700 px-2 py-2" style="display: none;">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      <% end %>
+    </div>
+
+    <div>
+      <button type="button" id="add-item-button" class="w-full text-sm text-indigo-600 hover:text-indigo-500 py-2 border border-indigo-300 rounded-md hover:bg-indigo-50">
+        + アイテムを追加
+      </button>
+    </div>
+
+    <div class="actions pt-4">
+      <%= f.submit "作成", class: "w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+    </div>
+  <% end %>
+
+  <div class="mt-4 text-center">
+    <%= link_to "戻る", root_path, class: "text-sm text-indigo-600 hover:text-indigo-500" %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const itemsContainer = document.getElementById('items-container');
+    const addItemButton = document.getElementById('add-item-button');
+    let itemIndex = <%= @memo.items.size %>;
+
+    // アイテム追加
+    addItemButton.addEventListener('click', function() {
+      const newItemField = document.createElement('div');
+      newItemField.className = 'item-field flex items-center space-x-2';
+      newItemField.innerHTML = `
+        <input type="text" name="memo[items_attributes][${itemIndex}][name]" placeholder="例: にんじん" class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+        <button type="button" class="remove-item text-red-600 hover:text-red-700 px-2 py-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      `;
+      itemsContainer.appendChild(newItemField);
+      itemIndex++;
+
+      // 削除ボタンの表示/非表示を更新
+      updateRemoveButtons();
+    });
+
+    // アイテム削除
+    itemsContainer.addEventListener('click', function(e) {
+      if (e.target.closest('.remove-item')) {
+        const itemField = e.target.closest('.item-field');
+        itemField.remove();
+        updateRemoveButtons();
+      }
+    });
+
+    // 削除ボタンの表示/非表示を更新
+    function updateRemoveButtons() {
+      const itemFields = itemsContainer.querySelectorAll('.item-field');
+      itemFields.forEach(function(field, index) {
+        const removeButton = field.querySelector('.remove-item');
+        if (itemFields.length > 1) {
+          removeButton.style.display = 'block';
+        } else {
+          removeButton.style.display = 'none';
+        }
+      });
+    }
+
+    // 初期表示時に削除ボタンの表示/非表示を設定
+    updateRemoveButtons();
+  });
+</script>
+

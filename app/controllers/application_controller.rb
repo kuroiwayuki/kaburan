@@ -2,6 +2,8 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_current_household, if: :user_signed_in?
 
+  helper_method :current_household
+
   protected
 
   def configure_permitted_parameters

@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :memos, only: [ :index ]
+  resources :memos, only: [ :index, :new, :create ]
 
   # Defines the root path route ("/")
   root "memos#index"

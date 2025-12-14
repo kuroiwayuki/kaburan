@@ -14,23 +14,41 @@
       <% @memos.each do |memo| %>
         <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
           <div class="flex justify-between items-start mb-3">
-            <div>
-              <span class="text-sm font-medium text-gray-700"><%= memo.user.name %></span>
-              <span class="text-xs text-gray-500 ml-2"><%= memo.created_at.strftime("%Y年%m月%d日 %H:%M") %></span>
+            <div class="flex-1">
+              <% if memo.title.present? %>
+                <h3 class="text-base font-semibold text-gray-900 mb-1"><%= memo.title %></h3>
+              <% end %>
+              <div class="flex items-center space-x-2">
+                <span class="text-sm font-medium text-gray-700"><%= memo.user.name %></span>
+                <span class="text-xs text-gray-500"><%= memo.created_at.strftime("%Y年%m月%d日 %H:%M") %></span>
+              </div>
+              <% if memo.reason.present? %>
+                <p class="text-sm text-gray-600 mt-2 italic">「<%= memo.reason %>」</p>
+              <% end %>
             </div>
           </div>
           
-          <div class="space-y-2">
+          <div class="space-y-1">
             <% memo.items.each do |item| %>
-              <div class="flex items-center space-x-2 <%= 'opacity-50' if item.purchased %>">
-                <% if item.purchased %>
-                  <span class="text-green-600">✓</span>
-                <% else %>
-                  <span class="text-gray-400">☐</span>
-                <% end %>
-                <span class="<%= 'line-through text-gray-500' if item.purchased %>"><%= item.name %></span>
-                <% if item.purchased %>
-                  <span class="text-xs text-gray-400">（購入済み）</span>
+              <div class="flex items-center space-x-3 py-2 px-1 <%= 'opacity-60' if item.purchased %>">
+                <%= form_with url: toggle_purchased_item_path(item), method: :patch, local: true, class: "flex items-center space-x-3 flex-1" do |f| %>
+                  <label class="flex items-center justify-center w-5 h-5 border-2 rounded flex-shrink-0 cursor-pointer <%= item.purchased ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-green-400' %> transition-colors">
+                    <input type="checkbox" 
+                           <%= 'checked' if item.purchased %> 
+                           onchange="this.form.submit()"
+                           class="hidden">
+                    <% if item.purchased %>
+                      <svg class="w-3.5 h-3.5 text-white pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    <% end %>
+                  </label>
+                  <span class="<%= 'line-through text-gray-500' if item.purchased %> <%= item.purchased ? 'text-gray-500' : 'text-gray-900' %> flex-1">
+                    <%= item.name %>
+                  </span>
+                  <% if item.purchased %>
+                    <span class="text-xs text-gray-400">購入済み</span>
+                  <% end %>
                 <% end %>
               </div>
             <% end %>

@@ -35,7 +35,7 @@ class MemosController < ApplicationController
   end
 
   def memo_params
-    params.require(:memo).permit(items_attributes: [:name, :_destroy])
+    params.require(:memo).permit(:title, :reason, items_attributes: [:name, :_destroy])
   end
 end
 

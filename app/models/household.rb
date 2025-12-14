@@ -4,11 +4,16 @@ class Household < ApplicationRecord
   validates :name, presence: true
   validates :invite_code, presence: true, uniqueness: true
 
+  belongs_to :creator, class_name: "User", optional: true
   has_many :memberships, dependent: :destroy
   has_many :users, through: :memberships
   has_many :memos, dependent: :destroy
 
   before_validation :generate_invite_code, on: :create
+
+  def created_by?(user)
+    creator_id == user&.id
+  end
 
   private
 

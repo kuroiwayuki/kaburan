@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
-  resources :households, only: [ :new, :create, :show ] do
+  resources :households, only: [ :new, :create, :show, :destroy ] do
     collection do
       get :join
       post :join, action: :join_create
@@ -31,6 +31,9 @@ Rails.application.routes.draw do
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
+
+  # Static pages
+  get "privacy_policy", to: "pages#privacy_policy", as: :privacy_policy
 
   # Defines the root path route ("/")
   root "home#index"

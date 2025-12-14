@@ -9,6 +9,7 @@ class HouseholdsController < ApplicationController
 
   def create
     @household = Household.new(household_params)
+    @household.creator = current_user
 
     if @household.save
       # 作成者を自動的にMembershipに追加
@@ -27,6 +28,36 @@ class HouseholdsController < ApplicationController
     unless @household
       redirect_to root_path, alert: "家族グループが見つかりませんでした"
     end
+  end
+
+  def destroy
+    @household = current_user.households.find_by(id: params[:id])
+
+    unless @household
+      redirect_to root_path, alert: "家族グループが見つかりませんでした"
+      return
+    end
+
+    # 作成者のみが削除可能
+    unless @household.created_by?(current_user)
+      redirect_to root_path, alert: "このグループを削除する権限がありません"
+      return
+    end
+
+    household_name = @household.name
+    @household.destroy
+
+    # 削除したHouseholdが現在選択中のHouseholdだった場合、セッションを更新
+    if session[:household_id] == params[:id].to_s
+      next_household = current_user.households.first
+      if next_household
+        session[:household_id] = next_household.id
+      else
+        session[:household_id] = nil
+      end
+    end
+
+    redirect_to root_path, notice: "「#{household_name}」を削除しました"
   end
 
   def join

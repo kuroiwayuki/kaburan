@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_14_184941) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_15_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,6 +19,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_14_184941) do
     t.string "invite_code", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "creator_id"
+    t.index ["creator_id"], name: "index_households_on_creator_id"
     t.index ["invite_code"], name: "index_households_on_invite_code", unique: true
   end
 
@@ -66,6 +68,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_14_184941) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "households", "users", column: "creator_id"
   add_foreign_key "items", "memos"
   add_foreign_key "memberships", "households"
   add_foreign_key "memberships", "users"

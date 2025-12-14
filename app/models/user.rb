@@ -8,5 +8,6 @@ class User < ApplicationRecord
 
   has_many :memberships, dependent: :destroy
   has_many :households, through: :memberships
+  has_many :created_households, class_name: "Household", foreign_key: "creator_id", dependent: :destroy
   has_many :memos, dependent: :destroy
 end

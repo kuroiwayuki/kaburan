@@ -1,7 +1,12 @@
-<div class="w-full max-w-md mx-auto">
+<div class="w-full max-w-7xl mx-auto">
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-2xl font-bold text-gray-900">買い物メモ</h2>
-    <%= link_to "新規作成", new_memo_path, class: "text-sm bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+    <%= link_to new_memo_path, class: "flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all font-medium" do %>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      <span>新規作成</span>
+    <% end %>
   </div>
 
   <% if @memos.empty? %>
@@ -10,32 +15,39 @@
       <p class="text-sm text-gray-400 mt-2">新しいメモを作成してみましょう</p>
     </div>
   <% else %>
-    <div class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <% @memos.each do |memo| %>
-        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-          <div class="flex justify-between items-start mb-3">
-            <div class="flex-1">
-              <% if memo.title.present? %>
-                <h3 class="text-base font-semibold text-gray-900 mb-1"><%= memo.title %></h3>
-              <% end %>
+        <div class="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+          <!-- カラフルなグラデーションバー -->
+          <div class="h-2 bg-gradient-to-r from-green-400 via-green-300 to-green-200"></div>
+          
+          <!-- カードヘッダー -->
+          <div class="px-4 py-3 bg-green-50 border-b border-green-100">
+            <div class="flex justify-between items-center">
               <div class="flex items-center space-x-2">
-                <span class="text-sm font-medium text-gray-700"><%= memo.user.name %></span>
+                <span class="text-sm font-semibold text-gray-800"><%= memo.user.name %></span>
                 <span class="text-xs text-gray-500"><%= memo.created_at.strftime("%Y年%m月%d日 %H:%M") %></span>
               </div>
-              <% if memo.reason.present? %>
-                <p class="text-sm text-gray-600 mt-2 italic">「<%= memo.reason %>」</p>
+              <%= link_to edit_memo_path(memo), class: "p-1.5 text-gray-600 hover:text-indigo-600 hover:bg-white rounded transition-colors" do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
               <% end %>
             </div>
-            <div>
-              <%= link_to "編集", edit_memo_path(memo), class: "text-xs text-indigo-600 hover:text-indigo-500 px-2 py-1" %>
-            </div>
+            <% if memo.title.present? %>
+              <h3 class="text-sm font-medium text-gray-700 mt-1"><%= memo.title %></h3>
+            <% end %>
+            <% if memo.reason.present? %>
+              <p class="text-xs text-gray-600 mt-1 italic">「<%= memo.reason %>」</p>
+            <% end %>
           </div>
           
-          <div class="space-y-1">
+          <!-- アイテムリスト -->
+          <div class="px-4 py-3 space-y-2">
             <% memo.items.each do |item| %>
-              <div class="flex items-center space-x-3 py-2 px-1 <%= 'opacity-60' if item.purchased %>">
+              <div class="flex items-center space-x-3 py-2 px-2 rounded-md hover:bg-gray-50 transition-colors <%= 'opacity-60' if item.purchased %>">
                 <%= form_with url: toggle_purchased_item_path(item), method: :patch, local: true, class: "flex items-center space-x-3 flex-1" do |f| %>
-                  <label class="flex items-center justify-center w-5 h-5 border-2 rounded flex-shrink-0 cursor-pointer <%= item.purchased ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-green-400' %> transition-colors">
+                  <label class="flex items-center justify-center w-5 h-5 border-2 rounded flex-shrink-0 cursor-pointer transition-all <%= item.purchased ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-green-400 bg-white' %>">
                     <input type="checkbox" 
                            <%= 'checked' if item.purchased %> 
                            onchange="this.form.submit()"
@@ -46,9 +58,9 @@
                       </svg>
                     <% end %>
                   </label>
-                  <span class="<%= 'line-through text-gray-500' if item.purchased %> <%= item.purchased ? 'text-gray-500' : 'text-gray-900' %> flex-1">
+                  <span class="<%= 'line-through text-gray-500' if item.purchased %> <%= item.purchased ? 'text-gray-500' : 'text-gray-900' %> flex-1 text-sm">
                     <% if item.quantity > 1 %>
-                      <span class="text-sm text-gray-600"><%= item.quantity %>個 × </span>
+                      <span class="text-gray-600 font-medium"><%= item.quantity %>個 × </span>
                     <% end %>
                     <%= item.name %>
                   </span>

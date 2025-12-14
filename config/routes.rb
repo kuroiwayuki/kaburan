@@ -20,6 +20,11 @@ Rails.application.routes.draw do
   end
 
   resources :memos, only: [ :index, :new, :create ]
+  resources :items, only: [] do
+    member do
+      patch :toggle_purchased
+    end
+  end
 
   # Defines the root path route ("/")
   root "memos#index"

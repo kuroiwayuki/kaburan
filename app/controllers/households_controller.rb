@@ -73,6 +73,39 @@ class HouseholdsController < ApplicationController
     redirect_to root_path, notice: "「#{household.name}」に切り替えました"
   end
 
+  def leave
+    household = current_user.households.find_by(id: params[:household_id])
+
+    if household.nil?
+      redirect_to root_path, alert: "家族グループが見つかりませんでした"
+      return
+    end
+
+    # 退会するHouseholdの名前を保存
+    household_name = household.name
+
+    # Membershipを削除
+    membership = current_user.memberships.find_by(household: household)
+    if membership
+      membership.destroy
+
+      # 退会したHouseholdが現在選択中のHouseholdだった場合、セッションを更新
+      if session[:household_id] == household.id.to_s
+        # 他のHouseholdがあれば最初のものを選択、なければnil
+        next_household = current_user.households.first
+        if next_household
+          session[:household_id] = next_household.id
+        else
+          session[:household_id] = nil
+        end
+      end
+
+      redirect_to root_path, notice: "「#{household_name}」から退会しました"
+    else
+      redirect_to root_path, alert: "退会に失敗しました"
+    end
+  end
+
   private
 
   def household_params

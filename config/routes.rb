@@ -16,10 +16,11 @@ Rails.application.routes.draw do
       get :join
       post :join, action: :join_create
       post :switch, action: :switch
+      delete :leave, action: :leave
     end
   end
 
-  resources :memos, only: [ :index, :new, :create, :edit, :update ]
+  resources :memos, only: [ :index, :new, :create, :edit, :update, :destroy ]
   resources :items, only: [] do
     member do
       patch :toggle_purchased

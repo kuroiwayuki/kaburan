@@ -15,9 +15,17 @@ class HouseholdsController < ApplicationController
       @household.memberships.create!(user: current_user)
       # 作成したHouseholdを自動的に選択
       session[:household_id] = @household.id
-      redirect_to root_path, notice: "家族グループ「#{@household.name}」を作成しました"
+      redirect_to household_path(@household), notice: "家族グループ「#{@household.name}」を作成しました"
     else
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def show
+    @household = current_user.households.find_by(id: params[:id])
+    
+    unless @household
+      redirect_to root_path, alert: "家族グループが見つかりませんでした"
     end
   end
 

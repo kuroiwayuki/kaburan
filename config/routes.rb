@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
-  resources :households, only: [ :new, :create ] do
+  resources :households, only: [ :new, :create, :show ] do
     collection do
       get :join
       post :join, action: :join_create
@@ -33,5 +33,5 @@ Rails.application.routes.draw do
   end
 
   # Defines the root path route ("/")
-  root "memos#index"
+  root "home#index"
 end

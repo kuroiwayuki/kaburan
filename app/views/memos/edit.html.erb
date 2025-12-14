@@ -1,7 +1,7 @@
 <div class="w-full max-w-md mx-auto">
-  <h2 class="text-2xl font-bold text-gray-900 mb-6">買い物メモを作成</h2>
+  <h2 class="text-2xl font-bold text-gray-900 mb-6">買い物メモを編集</h2>
 
-  <%= form_with model: @memo, url: memos_path, html: { class: "space-y-4" } do |f| %>
+  <%= form_with model: @memo, url: memo_path(@memo), method: :patch, html: { class: "space-y-4" } do |f| %>
     <% if @memo.errors.any? %>
       <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-4">
         <h3 class="font-semibold mb-2">
@@ -28,6 +28,7 @@
     <div id="items-container" class="space-y-3">
       <%= f.fields_for :items do |item_form| %>
         <div class="item-field flex items-center space-x-2">
+          <%= item_form.hidden_field :id if item_form.object.persisted? %>
           <%= item_form.text_field :name, placeholder: "例: にんじん", class: "flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" %>
           <%= item_form.number_field :quantity, min: 1, value: item_form.object.quantity || 1, class: "w-16 px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-center" %>
           <button type="button" class="remove-item text-red-600 hover:text-red-700 px-2 py-2" style="display: none;">
@@ -46,7 +47,7 @@
     </div>
 
     <div class="actions pt-4">
-      <%= f.submit "作成", class: "w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+      <%= f.submit "更新", class: "w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
     </div>
   <% end %>
 
@@ -59,7 +60,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     const itemsContainer = document.getElementById('items-container');
     const addItemButton = document.getElementById('add-item-button');
-    let itemIndex = <%= @memo.items.size %>;
+    let itemIndex = <%= @memo.items.reject(&:marked_for_destruction?).size %>;
 
     // アイテム追加
     addItemButton.addEventListener('click', function() {
@@ -84,16 +85,36 @@
     // アイテム削除
     itemsContainer.addEventListener('click', function(e) {
       if (e.target.closest('.remove-item')) {
+        e.preventDefault();
         const itemField = e.target.closest('.item-field');
-        itemField.remove();
+        const hiddenIdField = itemField.querySelector('input[type="hidden"][name*="[id]"]');
+        if (hiddenIdField) {
+          // 既存のItemの場合は_destroyフラグを設定
+          const nameAttr = hiddenIdField.name;
+          const baseName = nameAttr.replace(/\[id\]$/, '');
+          // 既存の_destroyフィールドがあるか確認
+          let destroyField = itemField.querySelector('input[type="hidden"][name*="[_destroy]"]');
+          if (!destroyField) {
+            destroyField = document.createElement('input');
+            destroyField.type = 'hidden';
+            destroyField.name = baseName + '[_destroy]';
+            destroyField.value = '1';
+            itemField.appendChild(destroyField);
+          }
+          // 入力欄を非表示にする
+          itemField.style.display = 'none';
+        } else {
+          // 新規追加のItemの場合は削除
+          itemField.remove();
+        }
         updateRemoveButtons();
       }
     });
 
     // 削除ボタンの表示/非表示を更新
     function updateRemoveButtons() {
-      const itemFields = itemsContainer.querySelectorAll('.item-field');
-      itemFields.forEach(function(field, index) {
+      const itemFields = itemsContainer.querySelectorAll('.item-field:not([style*="display: none"])');
+      itemFields.forEach(function(field) {
         const removeButton = field.querySelector('.remove-item');
         if (itemFields.length > 1) {
           removeButton.style.display = 'block';

@@ -26,6 +26,9 @@
                 <p class="text-sm text-gray-600 mt-2 italic">「<%= memo.reason %>」</p>
               <% end %>
             </div>
+            <div>
+              <%= link_to "編集", edit_memo_path(memo), class: "text-xs text-indigo-600 hover:text-indigo-500 px-2 py-1" %>
+            </div>
           </div>
           
           <div class="space-y-1">
@@ -44,6 +47,9 @@
                     <% end %>
                   </label>
                   <span class="<%= 'line-through text-gray-500' if item.purchased %> <%= item.purchased ? 'text-gray-500' : 'text-gray-900' %> flex-1">
+                    <% if item.quantity > 1 %>
+                      <span class="text-sm text-gray-600"><%= item.quantity %>個 × </span>
+                    <% end %>
                     <%= item.name %>
                   </span>
                   <% if item.purchased %>

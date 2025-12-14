@@ -26,6 +26,24 @@ class MemosController < ApplicationController
     end
   end
 
+  def edit
+    @memo = current_household.memos.find(params[:id])
+    # 既存のItemsがない場合は最低1つの入力欄を確保
+    @memo.items.build if @memo.items.empty?
+  end
+
+  def update
+    @memo = current_household.memos.find(params[:id])
+
+    if @memo.update(memo_params)
+      redirect_to root_path, notice: "買い物メモを更新しました"
+    else
+      # エラー時は最低1つのItem入力欄を確保
+      @memo.items.build if @memo.items.empty?
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def ensure_current_household
@@ -35,7 +53,7 @@ class MemosController < ApplicationController
   end
 
   def memo_params
-    params.require(:memo).permit(:title, :reason, items_attributes: [:name, :_destroy])
+    params.require(:memo).permit(:title, :reason, items_attributes: [:id, :name, :quantity, :_destroy])
   end
 end
 

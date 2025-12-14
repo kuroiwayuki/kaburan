@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :memos, only: [ :index, :new, :create ]
+  resources :memos, only: [ :index, :new, :create, :edit, :update ]
   resources :items, only: [] do
     member do
       patch :toggle_purchased

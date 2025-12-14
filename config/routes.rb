@@ -27,6 +27,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Letter opener web for viewing emails in development
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine, at: "/letter_opener"
+  end
+
   # Defines the root path route ("/")
   root "memos#index"
 end

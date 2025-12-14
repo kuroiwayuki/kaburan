@@ -13,6 +13,8 @@ class HouseholdsController < ApplicationController
     if @household.save
       # 作成者を自動的にMembershipに追加
       @household.memberships.create!(user: current_user)
+      # 作成したHouseholdを自動的に選択
+      session[:household_id] = @household.id
       redirect_to root_path, notice: "家族グループ「#{@household.name}」を作成しました"
     else
       render :new, status: :unprocessable_entity
@@ -50,11 +52,25 @@ class HouseholdsController < ApplicationController
     # Membershipを作成
     membership = @household.memberships.build(user: current_user)
     if membership.save
+      # 参加したHouseholdを自動的に選択
+      session[:household_id] = @household.id
       redirect_to root_path, notice: "家族グループ「#{@household.name}」に参加しました"
     else
       flash.now[:alert] = "参加に失敗しました"
       render :join, status: :unprocessable_entity
     end
+  end
+
+  def switch
+    household = current_user.households.find_by(id: params[:household_id])
+
+    if household.nil?
+      redirect_to root_path, alert: "選択した家族グループが見つかりませんでした"
+      return
+    end
+
+    session[:household_id] = household.id
+    redirect_to root_path, notice: "「#{household.name}」に切り替えました"
   end
 
   private

@@ -15,9 +15,12 @@ Rails.application.routes.draw do
     collection do
       get :join
       post :join, action: :join_create
+      post :switch, action: :switch
     end
   end
 
+  resources :memos, only: [ :index ]
+
   # Defines the root path route ("/")
-  root "posts#index"
+  root "memos#index"
 end

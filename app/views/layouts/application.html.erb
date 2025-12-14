@@ -24,30 +24,18 @@
           <div class="flex justify-between items-center">
             <div class="text-lg font-semibold text-gray-900">かぶらん</div>
             <div class="flex items-center space-x-4">
-              <% if current_household %>
-                <div class="relative">
-                  <button id="household-menu-button" class="flex items-center space-x-2 text-sm text-gray-700 hover:text-gray-900 focus:outline-none">
-                    <span><%= current_household.name %></span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                  </button>
-                  <div id="household-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
-                    <div class="py-1">
-                      <% current_user.households.each do |household| %>
-                        <%= form_with url: switch_households_path, method: :post, local: true, class: "block" do |f| %>
-                          <%= f.hidden_field :household_id, value: household.id %>
-                          <button type="submit" class="<%= 'bg-indigo-50 text-indigo-700' if household.id == current_household.id %> w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <%= household.name %>
-                            <% if household.id == current_household.id %>
-                              <span class="ml-2">✓</span>
-                            <% end %>
-                          </button>
-                        <% end %>
-                      <% end %>
-                    </div>
-                  </div>
-                </div>
+              <% if current_household && current_user.households.count > 1 %>
+                <%= form_with url: switch_households_path, method: :post, local: true, id: "household-switch-form", class: "inline-block" do |f| %>
+                  <%= f.select :household_id, 
+                      options_from_collection_for_select(current_user.households, :id, :name, current_household.id),
+                      {},
+                      { 
+                        onchange: "this.form.submit()",
+                        class: "text-sm text-gray-700 border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      } %>
+                <% end %>
+              <% elsif current_household %>
+                <span class="text-sm text-gray-700"><%= current_household.name %></span>
               <% end %>
               <span class="text-sm text-gray-700"><%= current_user.name %></span>
               <%= button_to "ログアウト", destroy_user_session_path, method: :delete, 
@@ -56,27 +44,6 @@
           </div>
         </div>
       </nav>
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          const button = document.getElementById('household-menu-button');
-          const menu = document.getElementById('household-menu');
-          
-          if (button && menu) {
-            button.addEventListener('click', function(e) {
-              e.stopPropagation();
-              menu.classList.toggle('hidden');
-            });
-            
-            document.addEventListener('click', function() {
-              menu.classList.add('hidden');
-            });
-            
-            menu.addEventListener('click', function(e) {
-              e.stopPropagation();
-            });
-          }
-        });
-      </script>
     <% end %>
 
     <main class="container mx-auto mt-28 px-5">

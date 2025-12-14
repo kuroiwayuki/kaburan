@@ -138,7 +138,7 @@
 - docs/screenshots/login.png
 - docs/screenshots/timeline.png
 - docs/screenshots/memo_create.png
-- docs/screenshots/history.png
+- docs/screenshots/history.png絵きれ
 
 ## 技術スタック
 

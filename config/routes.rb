@@ -27,7 +27,6 @@ Rails.application.routes.draw do
     end
   end
 
-  # Letter opener web for viewing emails in development
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end

@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
   devise_for :users
+
+  # Devise validationエラー後のリロードで /users にGETされる対策
+  devise_scope :user do
+    get "/users", to: "devise/registrations#new"
+  end
   get "posts/index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

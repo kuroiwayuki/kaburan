@@ -6,7 +6,7 @@
     <div class="px-6 py-6">
       <h2 class="text-2xl font-bold text-gray-900 mb-6">アカウント設定</h2>
 
-      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "space-y-6" }) do |f| %>
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "space-y-6", data: { turbo: false } }) do |f| %>
         <%= render "devise/shared/error_messages", resource: resource %>
 
         <div>
@@ -67,6 +67,7 @@
                   <div class="flex items-center space-x-2">
                     <% if household.created_by?(current_user) %>
                       <%= button_to household_path(household), method: :delete,
+                          data: { turbo: false },
                           onclick: "return confirm('「#{household.name}」を削除しますか？この操作は取り消せません。');",
                           class: "px-3 py-1.5 text-xs text-white bg-red-600 hover:bg-red-700 rounded transition-colors",
                           title: "グループを削除" do %>
@@ -98,7 +99,7 @@
         <h3 class="text-xl font-bold text-gray-900 mb-4">アカウント削除</h3>
         <p class="text-sm text-gray-600 mb-4">アカウントを削除すると、すべてのデータが永久に削除されます。この操作は取り消せません。</p>
         <%= button_to "アカウントを削除", registration_path(resource_name), 
-            data: { confirm: "本当にアカウントを削除しますか？この操作は取り消せません。", turbo_confirm: "本当にアカウントを削除しますか？この操作は取り消せません。" }, 
+            data: { confirm: "本当にアカウントを削除しますか？この操作は取り消せません。", turbo_confirm: "本当にアカウントを削除しますか？この操作は取り消せません。", turbo: false }, 
             method: :delete,
             class: "px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors font-medium" %>
       </div>

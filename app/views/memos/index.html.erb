@@ -74,6 +74,7 @@
                     </svg>
                   <% end %>
                   <%= button_to memo_path(memo), method: :delete, 
+                      data: { turbo: false },
                       onclick: "return confirm('この買い物メモを削除しますか？');",
                       class: "p-1.5 text-gray-600 hover:text-red-600 hover:bg-white rounded transition-colors",
                       title: "削除" do %>

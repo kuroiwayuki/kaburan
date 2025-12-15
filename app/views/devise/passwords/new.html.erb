@@ -7,7 +7,7 @@
       <h2 class="text-2xl font-bold text-gray-900 mb-6">パスワードをお忘れですか？</h2>
       <p class="text-sm text-gray-600 mb-6">登録されているメールアドレスを入力してください。パスワードリセットのリンクを送信します。</p>
 
-      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "space-y-6" }) do |f| %>
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "space-y-6", data: { turbo: false } }) do |f| %>
         <%= render "devise/shared/error_messages", resource: resource %>
 
         <div>

@@ -6,7 +6,8 @@
     "@hotwired/turbo-rails": "^8.0.0"
   },
   "scripts": {
-    "build": "bun build app/javascript/application.js --outdir app/assets/builds --target=browser --format=esm"
+    "build": "bun build app/javascript/application.js --outdir app/assets/builds --target=browser --format=esm",
+    "watch": "bun build app/javascript/application.js --outdir app/assets/builds --target=browser --format=esm --watch"
   }
 }
 

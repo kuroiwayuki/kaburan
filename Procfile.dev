@@ -1,1 +1,2 @@
 css: bin/rails tailwindcss:watch
+js: bun build app/javascript/application.js --outdir app/assets/builds --target=browser --format=esm --watch

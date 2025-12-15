@@ -11,3 +11,4 @@ class CreateMemos < ActiveRecord::Migration[7.2]
   end
 end
 
+

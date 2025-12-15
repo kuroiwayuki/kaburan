@@ -70,6 +70,7 @@
               <span><%= current_user.name %></span>
             <% end %>
             <%= button_to destroy_user_session_path, method: :delete, 
+                data: { turbo: false },
                 class: "text-sm text-white hover:text-green-100 bg-transparent border-none cursor-pointer font-medium transition-colors flex items-center space-x-1" do %>
               <span>ログアウト</span>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,4 +93,5 @@
     </div>
   </div>
 </nav>
+
 

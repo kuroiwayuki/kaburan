@@ -7,3 +7,4 @@ class Membership < ApplicationRecord
   validates :user_id, uniqueness: { scope: :household_id }
 end
 
+

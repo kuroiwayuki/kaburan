@@ -1,3 +1,17 @@
 ja:
   hello: "こんにちは"
+  errors:
+    format: "%{message}"
+  activerecord:
+    errors:
+      format: "%{message}"
+      models:
+        item:
+          attributes:
+            name:
+              blank: "商品名を入力してください"
+            quantity:
+              blank: "個数を入力してください"
+              not_a_number: "個数は数値で入力してください"
+              greater_than: "個数は1以上で入力してください"
 

@@ -11,7 +11,7 @@
         <% if user_signed_in? %>
           <% if current_household && current_user.households.count > 1 %>
             <div class="flex items-center space-x-2">
-              <%= form_with url: switch_households_path, method: :post, local: true, id: "household-switch-form", class: "inline-block" do |f| %>
+              <%= form_with url: switch_households_path, method: :post, local: true, data: { turbo: false }, id: "household-switch-form", class: "inline-block" do |f| %>
                 <%= f.select :household_id, 
                     options_from_collection_for_select(current_user.households, :id, :name, current_household.id),
                     {},
@@ -21,7 +21,7 @@
                     } %>
               <% end %>
               <div class="relative group">
-                <%= form_with url: leave_households_path, method: :delete, local: true, class: "inline-block" do |f| %>
+                <%= form_with url: leave_households_path, method: :delete, local: true, data: { turbo: false }, class: "inline-block" do |f| %>
                   <%= f.hidden_field :household_id, value: current_household.id %>
                   <%= f.button type: :submit, 
                       onclick: "return confirm('「#{current_household.name}」から退会しますか？');",
@@ -43,7 +43,7 @@
             <div class="flex items-center space-x-2">
               <span class="text-sm font-medium text-white"><%= current_household.name %></span>
               <div class="relative group">
-                <%= form_with url: leave_households_path, method: :delete, local: true, class: "inline-block" do |f| %>
+                <%= form_with url: leave_households_path, method: :delete, local: true, data: { turbo: false }, class: "inline-block" do |f| %>
                   <%= f.hidden_field :household_id, value: current_household.id %>
                   <%= f.button type: :submit, 
                       onclick: "return confirm('「#{current_household.name}」から退会しますか？');",
@@ -70,6 +70,7 @@
               <span><%= current_user.name %></span>
             <% end %>
             <%= button_to destroy_user_session_path, method: :delete, 
+                data: { turbo: false },
                 class: "text-sm text-white hover:text-green-100 bg-transparent border-none cursor-pointer font-medium transition-colors flex items-center space-x-1" do %>
               <span>ログアウト</span>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

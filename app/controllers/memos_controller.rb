@@ -21,7 +21,14 @@ class MemosController < ApplicationController
     @memo = current_household.memos.build(memo_params)
     @memo.user = current_user
 
-    if @memo.save
+    # 空白のitemを除外（nameとquantityの両方が空白のもの）
+    @memo.items = @memo.items.reject { |item| item.name.blank? && (item.quantity.blank? || item.quantity.to_i.zero?) }
+
+    if @memo.items.empty?
+      @memo.items.build
+      flash.now[:alert] = "商品を1つ以上入力してください"
+      render :new, status: :unprocessable_entity
+    elsif @memo.save
       redirect_to root_path, notice: "買い物メモを作成しました"
     else
       # エラー時は最低1つのItem入力欄を確保
@@ -38,8 +45,18 @@ class MemosController < ApplicationController
 
   def update
     @memo = current_household.memos.find(params[:id])
+    
+    # まずmemo_paramsを適用
+    @memo.assign_attributes(memo_params)
+    
+    # 空白のitemを除外（nameとquantityの両方が空白のもの）
+    @memo.items = @memo.items.reject { |item| item.name.blank? && (item.quantity.blank? || item.quantity.to_i.zero?) }
 
-    if @memo.update(memo_params)
+    if @memo.items.empty?
+      @memo.items.build
+      flash.now[:alert] = "商品を1つ以上入力してください"
+      render :edit, status: :unprocessable_entity
+    elsif @memo.save
       redirect_to root_path, notice: "買い物メモを更新しました"
     else
       # エラー時は最低1つのItem入力欄を確保

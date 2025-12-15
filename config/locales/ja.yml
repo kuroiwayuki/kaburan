@@ -1,0 +1,27 @@
+ja:
+  hello: "こんにちは"
+  errors:
+    format: "%{message}"
+  activerecord:
+    errors:
+      format: "%{message}"
+      models:
+        item:
+          attributes:
+            name:
+              blank: "商品名を入力してください"
+            quantity:
+              blank: "個数を入力してください"
+              not_a_number: "個数は数値で入力してください"
+              greater_than: "個数は1以上で入力してください"
+        user:
+          attributes:
+            email:
+              blank: "メールアドレスを入力してください"
+              invalid: "メールアドレスの形式が正しくありません"
+              taken: "このメールアドレスは既に使用されています"
+            password:
+              blank: "パスワードを入力してください"
+              too_short: "パスワードは%{count}文字以上で入力してください"
+            password_confirmation:
+              confirmation: "パスワード（確認）が一致しません"

@@ -1,0 +1,25 @@
+<footer class="bg-gray-800 text-white">
+  <div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col md:flex-row justify-between items-center">
+      <div class="mb-4 md:mb-0">
+        <div class="flex items-center space-x-2">
+          <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+          <span class="text-lg font-semibold">かぶらん</span>
+        </div>
+        <p class="text-sm text-gray-400 mt-2">家族の買い被りを防ぐ共有アプリ</p>
+      </div>
+      <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
+        <%= link_to privacy_policy_path, class: "text-sm text-gray-300 hover:text-green-400 transition-colors" do %>
+          プライバシーポリシー
+        <% end %>
+        <%= link_to terms_path, class: "text-sm text-gray-300 hover:text-green-400 transition-colors" do %>
+          利用規約
+        <% end %>
+        <p class="text-sm text-gray-500">© 2025 かぶらん. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+

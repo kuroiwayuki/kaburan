@@ -19,6 +19,9 @@ gem "jbuilder"
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 
+# Authentication [https://github.com/heartcombo/devise]
+gem "devise"
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
@@ -48,6 +51,8 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+  # View emails in the browser (Docker compatible)
+  gem "letter_opener_web"
 end
 
 group :test do

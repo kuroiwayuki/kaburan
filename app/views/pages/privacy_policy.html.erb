@@ -1,0 +1,95 @@
+<div class="w-full max-w-4xl mx-auto">
+  <div class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
+    <!-- カラフルなグラデーションバー -->
+    <div class="h-2 bg-gradient-to-r from-green-400 via-green-300 to-green-200"></div>
+    
+    <div class="px-6 py-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-6">プライバシーポリシー</h1>
+      
+      <div class="prose max-w-none space-y-6 text-gray-700">
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">1. はじめに</h2>
+          <p class="leading-relaxed">
+            かぶらん（以下「当アプリ」）は、ユーザーの個人情報の保護を重要視しています。本プライバシーポリシーは、当アプリがどのように個人情報を収集、使用、保護するかについて説明します。
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">2. 収集する情報</h2>
+          <p class="leading-relaxed mb-2">当アプリは、以下の情報を収集します：</p>
+          <ul class="list-disc list-inside space-y-1 ml-4">
+            <li>お名前（表示名）</li>
+            <li>メールアドレス</li>
+            <li>パスワード（暗号化して保存）</li>
+            <li>作成した買い物リストの内容</li>
+            <li>参加している家族グループの情報</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">3. 情報の使用目的</h2>
+          <p class="leading-relaxed mb-2">収集した情報は、以下の目的で使用します：</p>
+          <ul class="list-disc list-inside space-y-1 ml-4">
+            <li>アカウントの作成・管理</li>
+            <li>買い物リストの共有機能の提供</li>
+            <li>家族グループへの参加管理</li>
+            <li>サービス改善のための分析</li>
+            <li>重要な通知の送信</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">4. 情報の共有</h2>
+          <p class="leading-relaxed">
+            当アプリは、ユーザーが参加している家族グループ内でのみ、買い物リストの情報を共有します。メールアドレスやパスワードなどの個人情報は、グループ内でも共有されません。
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">5. データの保護</h2>
+          <p class="leading-relaxed">
+            当アプリは、適切なセキュリティ対策を講じて、ユーザーの個人情報を保護します。パスワードは暗号化して保存され、第三者に開示されることはありません。
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">6. ユーザーの権利</h2>
+          <p class="leading-relaxed mb-2">ユーザーは、以下の権利を有します：</p>
+          <ul class="list-disc list-inside space-y-1 ml-4">
+            <li>個人情報の閲覧・修正・削除</li>
+            <li>アカウントの削除</li>
+            <li>データのエクスポート</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">7. お問い合わせ</h2>
+          <p class="leading-relaxed">
+            プライバシーポリシーに関するご質問やご意見がございましたら、アカウント設定画面からお問い合わせください。
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">8. プライバシーポリシーの変更</h2>
+          <p class="leading-relaxed">
+            当アプリは、必要に応じて本プライバシーポリシーを変更する場合があります。変更があった場合は、アプリ内で通知いたします。
+          </p>
+        </section>
+
+        <div class="mt-8 pt-6 border-t border-gray-200">
+          <p class="text-sm text-gray-500">最終更新日: 2025年12月15日</p>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <%= link_to root_path, class: "inline-flex items-center space-x-2 text-green-600 hover:text-green-700 font-medium" do %>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          <span>ホームに戻る</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+

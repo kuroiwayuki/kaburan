@@ -1,0 +1,113 @@
+<div class="w-full max-w-2xl mx-auto">
+  <div class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
+    <!-- カラフルなグラデーションバー -->
+    <div class="h-2 bg-gradient-to-r from-green-400 via-green-300 to-green-200"></div>
+    
+    <div class="px-6 py-6">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">アカウント設定</h2>
+
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "space-y-6", data: { turbo: false } }) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+
+        <div>
+          <%= f.label :name, "お名前", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+          <%= f.text_field :name, autofocus: true, autocomplete: "name", class: "w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all" %>
+        </div>
+
+        <div>
+          <%= f.label :email, "メールアドレス", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+          <%= f.email_field :email, autocomplete: "email", class: "w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all" %>
+        </div>
+
+        <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 px-4 py-3 rounded-md">
+            <p class="text-sm">確認待ち: <%= resource.unconfirmed_email %></p>
+          </div>
+        <% end %>
+
+        <div>
+          <%= f.label :password, "新しいパスワード", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+          <em class="text-sm text-gray-500">（変更しない場合は空白のまま）</em>
+          <%= f.password_field :password, autocomplete: "new-password", class: "w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all mt-2" %>
+          <% if @minimum_password_length %>
+            <p class="text-sm text-gray-500 mt-1">（<%= @minimum_password_length %>文字以上）</p>
+          <% end %>
+        </div>
+
+        <div>
+          <%= f.label :password_confirmation, "新しいパスワード（確認）", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all" %>
+        </div>
+
+        <div>
+          <%= f.label :current_password, "現在のパスワード", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+          <em class="text-sm text-gray-500">（変更を確認するために必要です）</em>
+          <%= f.password_field :current_password, autocomplete: "current-password", class: "w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all mt-2" %>
+        </div>
+
+        <div class="actions pt-4">
+          <%= f.submit "更新", class: "w-full bg-green-500 text-white py-3 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all font-medium shadow-md hover:shadow-lg" %>
+        </div>
+      <% end %>
+
+      <!-- 参加中のグループ一覧 -->
+      <div class="mt-8 pt-8 border-t border-gray-200">
+        <h3 class="text-xl font-bold text-gray-900 mb-4">参加中のグループ</h3>
+        <% if current_user.households.any? %>
+          <div class="space-y-3">
+            <% current_user.households.each do |household| %>
+              <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <div class="flex justify-between items-center">
+                  <div class="flex-1">
+                    <h4 class="font-semibold text-gray-900"><%= household.name %></h4>
+                    <% if household.created_by?(current_user) %>
+                      <span class="text-xs text-green-600 font-medium mt-1 inline-block">作成者</span>
+                    <% end %>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <% if household.created_by?(current_user) %>
+                      <%= button_to household_path(household), method: :delete,
+                          data: { turbo: false },
+                          onclick: "return confirm('「#{household.name}」を削除しますか？この操作は取り消せません。');",
+                          class: "px-3 py-1.5 text-xs text-white bg-red-600 hover:bg-red-700 rounded transition-colors",
+                          title: "グループを削除" do %>
+                        削除
+                      <% end %>
+                    <% else %>
+                      <%= form_with url: leave_households_path, method: :delete, local: true, data: { turbo: false }, class: "inline-block" do |f| %>
+                        <%= f.hidden_field :household_id, value: household.id %>
+                        <%= f.button type: :submit,
+                            onclick: "return confirm('「#{household.name}」から退会しますか？');",
+                            class: "px-3 py-1.5 text-xs text-white bg-gray-600 hover:bg-gray-700 rounded transition-colors",
+                            title: "グループから退会" do %>
+                          退会
+                        <% end %>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-gray-500 text-sm">参加中のグループはありません</p>
+        <% end %>
+      </div>
+
+      <!-- アカウント削除 -->
+      <div class="mt-8 pt-8 border-t border-gray-200">
+        <h3 class="text-xl font-bold text-gray-900 mb-4">アカウント削除</h3>
+        <p class="text-sm text-gray-600 mb-4">アカウントを削除すると、すべてのデータが永久に削除されます。この操作は取り消せません。</p>
+        <%= button_to "アカウントを削除", registration_path(resource_name), 
+            data: { turbo: false },
+            onclick: "return confirm('本当にアカウントを削除しますか？\\n\\nこの操作は取り消せません。\\nすべてのデータが永久に削除されます。');",
+            method: :delete,
+            class: "px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors font-medium" %>
+      </div>
+
+      <div class="mt-6">
+        <%= link_to "戻る", root_path, class: "text-sm text-green-600 hover:text-green-700 font-medium" %>
+      </div>
+    </div>
+  </div>
+</div>

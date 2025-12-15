@@ -1,0 +1,252 @@
+<div class="w-full max-w-2xl mx-auto">
+  <div class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
+    <!-- カラフルなグラデーションバー -->
+    <div class="h-2 bg-gradient-to-r from-green-400 via-green-300 to-green-200"></div>
+    
+    <div class="px-6 py-6">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">買い物メモを作成</h2>
+
+      <% if flash[:alert] %>
+        <div class="bg-red-50 border-l-4 border-red-400 text-red-700 px-4 py-3 rounded-md mb-4" role="alert">
+          <p class="font-medium"><%= flash[:alert] %></p>
+        </div>
+      <% end %>
+
+      <%= form_with model: @memo, url: memos_path, html: { class: "space-y-6", data: { turbo: false } } do |f| %>
+        <% if @memo.errors.any? %>
+          <div class="bg-red-50 border-l-4 border-red-400 text-red-700 px-4 py-3 rounded-md mb-4">
+            <h3 class="font-semibold mb-2">
+              <%= pluralize(@memo.errors.count, "件のエラー") %>があります：
+            </h3>
+            <ul class="list-disc list-inside space-y-1">
+              <% @memo.errors.each do |error| %>
+                <li>空白が存在しています <%= error.message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div>
+          <%= f.label :title, "タイトル（任意）", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+          <%= f.text_field :title, placeholder: "例: 週末の買い物", class: "w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all" %>
+        </div>
+
+        <div>
+          <%= f.label :reason, "なんで買うのか（任意）", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+          <%= f.text_area :reason, rows: 3, placeholder: "例: 週末に家族で料理するため", class: "w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all resize-none" %>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-3">商品リスト</label>
+          <div id="items-container" class="space-y-3">
+            <%= f.fields_for :items do |item_form| %>
+              <div class="item-field flex items-center space-x-3 bg-gray-50 rounded-lg p-3 border border-gray-200">
+                <div class="flex-1">
+                  <%= item_form.text_field :name, placeholder: "例: にんじん", class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white transition-all item-name-input" %>
+                </div>
+                <%= item_form.number_field :quantity, min: 1, value: item_form.object.quantity || 1, class: "w-20 px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-center bg-white transition-all" %>
+                <button type="button" class="remove-item text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-all" style="display: none;">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                </button>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div>
+          <button type="button" id="add-item-button" class="w-full text-sm font-medium text-green-600 hover:text-green-700 py-3 border-2 border-dashed border-green-300 rounded-lg hover:bg-green-50 hover:border-green-400 transition-all flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            アイテムを追加
+          </button>
+        </div>
+
+        <div class="flex gap-3 pt-4">
+          <%= link_to "キャンセル", root_path, class: "flex-1 text-center px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-all font-medium" %>
+          <%= f.submit "作成", class: "flex-1 bg-green-500 text-white py-3 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all font-medium shadow-md hover:shadow-lg" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const itemsContainer = document.getElementById('items-container');
+    const addItemButton = document.getElementById('add-item-button');
+    let itemIndex = <%= @memo.items.size %>;
+
+    // 商品名の正規化関数（JavaScript版）
+    function normalizeItemName(name) {
+      if (!name) return '';
+      
+      let normalized = name;
+      // 全角英数字を半角に変換
+      normalized = normalized.replace(/[０-９Ａ-Ｚａ-ｚ]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+      });
+      // カタカナをひらがなに変換
+      normalized = normalized.replace(/[ァ-ヶ]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0x60);
+      });
+      // 空白を削除
+      normalized = normalized.replace(/\s+/g, '');
+      // 小文字に統一
+      return normalized.toLowerCase();
+    }
+
+    // 重複チェック関数
+    function checkDuplicateItems() {
+      const itemFields = itemsContainer.querySelectorAll('.item-field:not([style*="display: none"])');
+      const itemNames = {};
+      let hasDuplicate = false;
+      
+      itemFields.forEach(function(field) {
+        const nameInput = field.querySelector('input[name*="[name]"]');
+        if (nameInput && nameInput.value.trim()) {
+          const normalizedName = normalizeItemName(nameInput.value.trim());
+          
+          if (normalizedName && itemNames[normalizedName]) {
+            // 重複が見つかった
+            hasDuplicate = true;
+            nameInput.classList.add('border-red-500', 'bg-red-50');
+            showDuplicateAlert(field, nameInput.value.trim());
+          } else {
+            nameInput.classList.remove('border-red-500', 'bg-red-50');
+            if (normalizedName) {
+              itemNames[normalizedName] = true;
+            }
+            // 重複が解消された場合はアラートを削除
+            removeDuplicateAlert(field);
+          }
+        } else {
+          // 空の場合はアラートを削除
+          if (nameInput) {
+            nameInput.classList.remove('border-red-500', 'bg-red-50');
+          }
+          removeDuplicateAlert(field);
+        }
+      });
+      
+      // 送信ボタンを無効化
+      const submitButton = document.querySelector('input[type="submit"]');
+      if (submitButton) {
+        if (hasDuplicate) {
+          submitButton.disabled = true;
+          submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+        } else {
+          submitButton.disabled = false;
+          submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+      }
+      
+      return !hasDuplicate;
+    }
+
+    // 重複アラートを表示
+    function showDuplicateAlert(field, itemName) {
+      // 既存のアラートを削除
+      removeDuplicateAlert(field);
+      
+      // 新しいアラートを追加
+      const alert = document.createElement('div');
+      alert.className = 'duplicate-alert text-xs text-red-600 mt-1 flex items-center gap-1 col-span-2';
+      alert.innerHTML = `
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>「${itemName}」は既に追加されています</span>
+      `;
+      
+      const nameInput = field.querySelector('input[name*="[name]"]');
+      const parentDiv = nameInput.parentElement;
+      parentDiv.appendChild(alert);
+    }
+
+    // 重複アラートを削除
+    function removeDuplicateAlert(field) {
+      const existingAlert = field.querySelector('.duplicate-alert');
+      if (existingAlert) {
+        existingAlert.remove();
+      }
+    }
+
+    // アイテム追加
+    addItemButton.addEventListener('click', function() {
+      const newItemField = document.createElement('div');
+      newItemField.className = 'item-field flex items-center space-x-3 bg-gray-50 rounded-lg p-3 border border-gray-200';
+      newItemField.innerHTML = `
+        <div class="flex-1">
+          <input type="text" name="memo[items_attributes][${itemIndex}][name]" placeholder="例: にんじん" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white transition-all item-name-input">
+        </div>
+        <input type="number" name="memo[items_attributes][${itemIndex}][quantity]" min="1" value="1" class="w-20 px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-center bg-white transition-all">
+        <button type="button" class="remove-item text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+        </button>
+      `;
+      itemsContainer.appendChild(newItemField);
+      itemIndex++;
+
+      // 削除ボタンの表示/非表示を更新
+      updateRemoveButtons();
+      
+      // 重複チェックを実行
+      setTimeout(checkDuplicateItems, 100);
+    });
+
+    // アイテム削除
+    itemsContainer.addEventListener('click', function(e) {
+      if (e.target.closest('.remove-item')) {
+        const itemField = e.target.closest('.item-field');
+        itemField.remove();
+        updateRemoveButtons();
+        // 重複チェックを再実行
+        checkDuplicateItems();
+      }
+    });
+
+    // アイテム名入力時に重複チェック
+    itemsContainer.addEventListener('input', function(e) {
+      if (e.target.matches('input[name*="[name]"]') || e.target.matches('.item-name-input')) {
+        checkDuplicateItems();
+      }
+    });
+
+    // フォーム送信前に最終チェック
+    const form = document.querySelector('form');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        if (!checkDuplicateItems()) {
+          e.preventDefault();
+          alert('重複している商品があります。重複を解消してから送信してください。');
+          return false;
+        }
+      });
+    }
+
+    // 削除ボタンの表示/非表示を更新
+    function updateRemoveButtons() {
+      const itemFields = itemsContainer.querySelectorAll('.item-field');
+      itemFields.forEach(function(field, index) {
+        const removeButton = field.querySelector('.remove-item');
+        if (itemFields.length > 1) {
+          removeButton.style.display = 'block';
+        } else {
+          removeButton.style.display = 'none';
+        }
+      });
+    }
+
+    // 初期表示時に削除ボタンの表示/非表示を設定
+    updateRemoveButtons();
+    
+    // 初期表示時に重複チェックを実行
+    checkDuplicateItems();
+  });
+</script>
+

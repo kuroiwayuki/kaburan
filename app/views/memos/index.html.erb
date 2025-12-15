@@ -1,0 +1,130 @@
+<div class="w-full max-w-7xl mx-auto">
+  <% if current_household.nil? %>
+    <!-- Householdがない場合の専用表示 -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
+      <div class="h-2 bg-gradient-to-r from-green-400 via-green-300 to-green-200"></div>
+      <div class="px-6 py-12 text-center">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">家族グループに参加または作成</h2>
+        <p class="text-gray-600 mb-8">買い物メモを共有するには、家族グループに参加するか、新しいグループを作成してください</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <%= link_to join_households_path, class: "flex items-center justify-center space-x-2 bg-white border-2 border-green-500 text-green-600 hover:bg-green-50 px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all font-medium" do %>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+            </svg>
+            <span>招待コードで参加</span>
+          <% end %>
+          <%= link_to new_household_path, class: "flex items-center justify-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all font-medium" do %>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            <span>新しいグループを作成</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-900">買い物メモ</h2>
+      <div class="flex items-center space-x-3">
+        <%= link_to join_households_path, class: "flex items-center space-x-2 bg-white border-2 border-green-500 text-green-600 hover:bg-green-50 px-4 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all font-medium" do %>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+          </svg>
+          <span>グループに参加</span>
+        <% end %>
+        <%= link_to new_household_path, class: "flex items-center space-x-2 bg-white border-2 border-green-500 text-green-600 hover:bg-green-50 px-4 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all font-medium" do %>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <span>グループを作成</span>
+        <% end %>
+        <%= link_to new_memo_path, class: "flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all font-medium" do %>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <span>新規作成</span>
+        <% end %>
+      </div>
+    </div>
+
+    <% if @memos.empty? %>
+      <div class="text-center py-12 bg-gray-50 rounded-lg">
+        <p class="text-gray-500">まだメモがありません</p>
+        <p class="text-sm text-gray-400 mt-2">新しいメモを作成してみましょう</p>
+      </div>
+    <% else %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <% @memos.each do |memo| %>
+        <div class="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+          <!-- カラフルなグラデーションバー -->
+          <div class="h-2 bg-gradient-to-r from-green-400 via-green-300 to-green-200"></div>
+          
+          <!-- カードヘッダー -->
+          <div class="px-4 py-3 bg-green-50 border-b border-green-100">
+            <div class="flex justify-between items-center">
+              <div class="flex items-center space-x-2">
+                <span class="text-sm font-semibold text-gray-800"><%= memo.user.name %></span>
+                <span class="text-xs text-gray-500"><%= memo.created_at.strftime("%Y年%m月%d日 %H:%M") %></span>
+              </div>
+              <div class="flex items-center space-x-1">
+                <% if memo.user == current_user %>
+                  <%= link_to edit_memo_path(memo), class: "p-1.5 text-gray-600 hover:text-indigo-600 hover:bg-white rounded transition-colors", title: "編集" do %>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                    </svg>
+                  <% end %>
+                  <%= button_to memo_path(memo), method: :delete, 
+                      data: { turbo: false },
+                      onclick: "return confirm('この買い物メモを削除しますか？');",
+                      class: "p-1.5 text-gray-600 hover:text-red-600 hover:bg-white rounded transition-colors",
+                      title: "削除" do %>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+            <% if memo.title.present? %>
+              <h3 class="text-sm font-medium text-gray-700 mt-1"><%= memo.title %></h3>
+            <% end %>
+            <% if memo.reason.present? %>
+              <p class="text-xs text-gray-600 mt-1 italic">「<%= memo.reason %>」</p>
+            <% end %>
+          </div>
+          
+          <!-- アイテムリスト -->
+          <div class="px-4 py-3 space-y-2">
+            <% memo.items.each do |item| %>
+              <div class="flex items-center space-x-3 py-2 px-2 rounded-md hover:bg-gray-50 transition-colors <%= 'opacity-60' if item.purchased %>">
+                <%= form_with url: toggle_purchased_item_path(item), method: :patch, local: true, data: { turbo: false }, class: "flex items-center space-x-3 flex-1" do |f| %>
+                  <label class="flex items-center justify-center w-5 h-5 border-2 rounded flex-shrink-0 cursor-pointer transition-all <%= item.purchased ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-green-400 bg-white' %>">
+                    <input type="checkbox" 
+                           <%= 'checked' if item.purchased %> 
+                           onchange="this.form.submit()"
+                           class="hidden">
+                    <% if item.purchased %>
+                      <svg class="w-3.5 h-3.5 text-white pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    <% end %>
+                  </label>
+                  <span class="<%= 'line-through text-gray-500' if item.purchased %> <%= item.purchased ? 'text-gray-500' : 'text-gray-900' %> flex-1 text-sm">
+                    <% if item.quantity > 1 %>
+                      <span class="text-gray-600 font-medium"><%= item.quantity %>個 × </span>
+                    <% end %>
+                    <%= item.name %>
+                  </span>
+                  <% if item.purchased %>
+                    <span class="text-xs text-gray-400">購入済み</span>
+                  <% end %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <% end %>
+  <% end %>
+</div>

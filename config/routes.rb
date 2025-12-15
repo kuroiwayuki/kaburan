@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  devise_for :users
+
+  # Devise validationエラー後のリロードで /users にGETされる対策
+  devise_scope :user do
+    get "/users", to: "devise/registrations#new"
+  end
   get "posts/index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -10,6 +16,30 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
+  resources :households, only: [ :new, :create, :show, :destroy ] do
+    collection do
+      get :join
+      post :join, action: :join_create
+      post :switch, action: :switch
+      delete :leave, action: :leave
+    end
+  end
+
+  resources :memos, only: [ :index, :new, :create, :edit, :update, :destroy ]
+  resources :items, only: [] do
+    member do
+      patch :toggle_purchased
+    end
+  end
+
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine, at: "/letter_opener"
+  end
+
+  # Static pages
+  get "privacy_policy", to: "pages#privacy_policy", as: :privacy_policy
+  get "terms", to: "pages#terms", as: :terms
+
   # Defines the root path route ("/")
-  # root "posts#index"
+  root "home#index"
 end

@@ -13,10 +13,31 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet">
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <style>
+      body {
+        font-family: 'Noto Sans JP', 'M PLUS Rounded 1c', sans-serif;
+      }
+      .font-display {
+        font-family: 'M PLUS Rounded 1c', sans-serif;
+        font-weight: 700;
+      }
+    </style>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="bg-gray-50 flex flex-col min-h-screen">
+    <%= render "shared/header" %>
+    <%= render "layouts/flash_messages" %>
+    <main class="flex-grow flex flex-col container mx-auto mt-8 px-4 md:px-6 pb-8">
+      <div class="flex-grow">
+        <%= yield %>
+      </div>
+    </main>
+    <%= render "shared/footer" %>
   </body>
 </html>
